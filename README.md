@@ -599,4 +599,231 @@ public class OperatingSystemFactory {
 Hum yaha OperatingSystemFactory.getInstance()
  call karke apna desired parameter i.e type  (windows or linux) pass karenge.. aur apna object use karenge.. humko koyi lena dena nhi isne object create kaise kiya..
 
- 
+ # 3. Abstract factory design pattern.
+ Factory design pattern :  Based on some specific parameter we are going to create an object.
+
+Abstract design pattern is a factory of the factory design pattern.
+
+I want to create the application.  
+This application can be a Windows App 
+& it can also be the Mac App,  
+Also it contain UI logic like Button, CheckBox etc
+
+![Alt text](image-6.png)
+
+Both Os are different and based on that they have diff UI component.
+
+so for Window Os all UI components should be windows based
+similary vice  versa for Mac.
+
+![Alt text](image-7.png)
+
+Upar hum Application ko sirf batayenge ki humko konsi UI Factory ka app hona(window or mac) baki kuch bhi details provide karne ki jarurat nhi.
+
+### lets create Button
+```java
+package com.adi.abstractFactory;
+
+public interface Button {
+
+	//methods of interface are by default public and abstract
+	void paint();
+}
+
+```
+### Window's based button
+```java
+package com.adi.abstractFactory.os.win;
+
+import com.adi.abstractFactory.Button;
+
+public class WinButton  implements Button{
+
+	@Override
+	public void paint() {
+		
+		System.out.println("Win Button");
+		
+	}
+
+}
+
+```
+### Mac based Button
+```java
+package com.adi.abstractFactory.os.mac;
+
+import com.adi.abstractFactory.Button;
+
+public class MacButton implements Button{
+
+	@Override
+	public void paint() {
+		System.out.println("Mac Button");
+		
+	}
+
+}
+
+```
+
+### let's create checkbox
+```java
+package com.adi.abstractFactory;
+
+public interface CheckBox {
+	
+	
+	void paint();
+}
+
+```
+### Windows based checkbox
+```java
+package com.adi.abstractFactory.os.win;
+
+import com.adi.abstractFactory.CheckBox;
+
+public class WinCheckBox implements CheckBox{
+
+	@Override
+	public void paint() {
+		System.out.println("Windows CheckBox");
+		
+	}
+
+}
+
+```
+### Mac based checkbox
+```java
+package com.adi.abstractFactory.os.mac;
+
+import com.adi.abstractFactory.CheckBox;
+
+public class MacCheckBox implements CheckBox {
+
+	@Override
+	public void paint() {
+		System.out.println("Mac CheckBox");
+
+	}
+
+}
+
+```
+
+## Let's create UIFactory which are responsible for create UIcompnents
+```java
+package com.adi.abstractFactory;
+
+public interface UIFactory {
+
+	//createButton() here it is abstract method which return Button
+	Button createButton();
+	
+	CheckBox createCheckBox();
+}
+
+```
+
+### Windows based UIFactory responsible for creating window based UI component
+```java
+package com.adi.abstractFactory;
+
+import com.adi.abstractFactory.os.win.WinButton;
+import com.adi.abstractFactory.os.win.WinCheckBox;
+
+public class WinUIFactory implements UIFactory {
+
+	@Override
+	public Button createButton() {
+		
+		return new WinButton();
+	}
+
+	@Override
+	public CheckBox createCheckBox() {
+		
+		return new WinCheckBox();
+	}
+
+}
+
+```
+### Mac based UIFactory responsible for creating Mac based UI component
+
+```java
+package com.adi.abstractFactory;
+
+import com.adi.abstractFactory.os.mac.MacButton;
+import com.adi.abstractFactory.os.mac.MacCheckBox;
+
+public class MacUIFactory implements UIFactory {
+
+	@Override
+	public Button createButton() {
+		
+		return new MacButton();
+	}
+
+	@Override
+	public CheckBox createCheckBox() {
+		
+		return new MacCheckBox();
+	}
+
+}
+
+```
+
+### Now create Abstract Application Factory jisko UIFactory diya ..wo crate karke denga
+```java
+package com.adi.abstractFactory;
+
+public class Application {
+
+	//all our application contain button and checkBox
+	private Button button;
+	
+	private CheckBox checkbox;
+	
+	public Application(UIFactory factory) {
+        //initiialzie button and checkbox 
+        //via provided factory
+		button = factory.createButton();
+		checkbox = factory.createCheckBox();
+	}
+	
+	public void paint() {
+        //once initialization done.. 
+        // go use it.
+		button.paint();
+		checkbox.paint();
+	}
+}
+
+```
+
+```java
+package com.adi.abstractFactory;
+
+public class Main {
+
+	public static void main(String[] args) {
+	
+		Application application = new Application(new WinUIFactory());
+		
+		application.paint();//Win Button  Windows CheckBox
+
+		Application application2 = new Application(new MacUIFactory());
+		
+		application2.paint();//Mac Button  Mac CheckBox
+		
+
+	}
+
+}
+
+```
+
