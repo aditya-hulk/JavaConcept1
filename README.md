@@ -161,6 +161,30 @@ it is one of the way that will break the concept of Singleton
 serialization - it will convert your object into byte form and that form will be sent over to the network.
 
 de serialization- vice versa.
+```java
+package com.adi;
+
+import java.io.Serializable;
+
+public class LazySingleton implements Serializable{
+
+	private static LazySingleton instance = null;
+	
+	private LazySingleton() {
+		
+	}
+	
+	public static LazySingleton getInstance() {
+		
+		if(instance == null) {
+			instance = new LazySingleton();
+		}
+		
+		return instance;
+	}
+}
+
+```
 
 ```java
 package com.adi;
@@ -418,3 +442,161 @@ public class ExampleSerialization {
 }
 
 ```
+# 2. Factory Design Pattern in details
+![Alt text](image-2.png)
+![Alt text](image-4.png)
+
+![Alt text](image-3.png)
+ 
+ Mujko Nexon Electric car banani hia to pass EV 
+
+ and  Nexon Tradtional car banani hai to pass TC
+
+ Rest assembly line is same.
+
+
+ So here in Factory design pattern, Based on some parameter we are going to create an object.
+
+ We just focus on end product, and not on how it's created.
+
+ ### Eg
+ ![Alt text](image-5.png)
+
+ Suppose you are creating an app and that app runs in Windows as well as in linux Operating system.  
+File sys different hai dono mein. File command dono ki diff hai.
+
+So we create our object in such a way that if we pass windows toh window ka object banke aavenga..
+Vice versa for linux
+
+### Factory design patter ya to abstract clas ya interface se hi ban sakta.
+```java
+package com.adi.factory;
+
+public abstract class OperatingSystem {
+
+	//Os ke diff diff version hote
+	private String version;
+	
+	//OS ke diff architecure bhi hote
+	private String architecture;
+
+	public String getVersion() {
+		return version;
+	}
+
+	public void setVersion(String version) {
+		this.version = version;
+	}
+
+	public String getArchitecture() {
+		return architecture;
+	}
+
+	public void setArchitecture(String architecture) {
+		this.architecture = architecture;
+	}
+
+	public OperatingSystem(String version, String architecture) {
+		super();
+		this.version = version;
+		this.architecture = architecture;
+	}
+	
+	
+	// 2 abstract methods-- jiske aapko implelmentation provide karna honga..
+	//This 2 methods are diff based on diff os.
+	//change directory ki command badal jati linux or windows mein
+	public abstract void changeDir(String dir);
+	
+	public abstract void removeDir(String dir);
+}
+
+```
+```java
+package com.adi.factory;
+
+public class LinuxOperatingSystem extends OperatingSystem {
+
+	
+	
+	public LinuxOperatingSystem(String version, String architecture) {
+		super(version, architecture);		
+	}
+
+	@Override
+	public void changeDir(String dir) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void removeDir(String dir) {
+		// TODO Auto-generated method stub
+		
+	}
+
+}
+
+```
+
+```java
+package com.adi.factory;
+
+public class WindowsOperatingSystem  extends OperatingSystem{
+
+	public WindowsOperatingSystem(String version, String architecture) {
+		super(version, architecture);
+		// TODO Auto-generated constructor stub
+	}
+
+	@Override
+	public void changeDir(String dir) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void removeDir(String dir) {
+		// TODO Auto-generated method stub
+		
+	}
+
+}
+
+```
+
+```java
+package com.adi.factory;
+
+public class OperatingSystemFactory {
+	
+	//Constructor private
+	// no one can create instance
+	// Object created in Factory premises no one have access
+	
+	private OperatingSystemFactory() {
+		
+	}
+	
+	public static OperatingSystem getInstance(String type, String version, String architecture) {
+		switch(type) {
+		case "WINDOWS":
+			return new WindowsOperatingSystem(version, architecture);
+		
+		case "LINUX":
+			return new LinuxOperatingSystem(version, architecture);
+			
+		default:
+			throw new IllegalArgumentException("Os Not Supported");
+		
+		}
+	}
+
+}
+
+```
+
+Hum yaha OperatingSystemFactory.getInstance()
+ call karke apna desired parameter i.e type  (windows or linux) pass karenge.. aur apna object use karenge.. humko koyi lena dena nhi isne object create kaise kiya..
+
+ 
