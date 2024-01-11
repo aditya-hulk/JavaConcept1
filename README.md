@@ -1408,4 +1408,225 @@ Nested class ke pattern mein banate hia builder design Pattern follow karke so a
 
 Lombok mein annotation hai @Builder  yadi kiske class k upar lagaya to wo convert ho jata builder design pattern men
 
+# 5. Prototype Design Pattern
+
+Prototype design pattern is a Creational Design pattern.
+
+It is helpful when we want to create a differnt type of object.
+
+![Alt text](image-12.png)
+Robot example.  
+
+P1(Base Object)  
+via P1+modification  = P2 is created  
+P3 is creted from P1 or P2  
+
+So here Based on Base structure different object are created.
+
+
+### When we use Prototype design pattern -> when the object creation is bulky/heavy.
+
+So what we do instead of creating a new object everytime,  
+we clone base object + do some modification  and create some new prototype object.
+
+![Alt text](image-13.png)
+
+Vechile ye base object hai contain Engine,Model,Price  
+Two Wheeler - Base + isElectric  
+Four Wheeler - Base + ac + Petrol etc.
+
+Humko Aage Two Wheeler ya FourWheeler ke prototype banana hai.    
+Humko pata hai ki filhal Two Wheeler aur Four Wheeler banane mein kitna samay laga...  
+
+### What we do?
+We store Two Wheeler and Four Wheeler object in VechileRegistory in the form of Key-value pair i.e Hashmap.  
+
+If some one want to crete Prototype of TwoWheeler he asked registry, where we return already clone of TwoWheeler object.
+
+![Alt text](image-14.png)
+
+```java
+package com.adi.prototype;
+
+//Base class rahenga --
+// isko hi hum use karke i.e(clone + modification) naya prototype create
+// karenge
+// so make sure this implements Cloneable (I)
+public abstract class Vechile implements Cloneable {
+
+	private String engine;
+	private String model;
+	private long price;
+	
+	public Vechile(String engine, String model, long price) {
+		super();
+		this.engine = engine;
+		this.model = model;
+		this.price = price;
+	}
+
+	public String getEngine() {
+		return engine;
+	}
+
+	public void setEngine(String engine) {
+		this.engine = engine;
+	}
+
+	public String getModel() {
+		return model;
+	}
+
+	public void setModel(String model) {
+		this.model = model;
+	}
+
+	public long getPrice() {
+		return price;
+	}
+
+	public void setPrice(long price) {
+		this.price = price;
+	}
+
+	//If you implement cloable(I) must override clone()
+//	@Override
+//	protected Object clone() throws CloneNotSupportedException {
+//		
+//		return super.clone();
+//	}
+	
+	//This clone() method returning the Vechile Object
+	@Override
+	protected Vechile clone() throws CloneNotSupportedException {
+		
+		return (Vechile) super.clone();
+	}
+
+	@Override
+	public String toString() {
+		return "Vechile [engine=" + engine + ", model=" + model + ", price=" + price + "]";
+	}
+	
+	
+}
+
+```
+
+```java
+package com.adi.prototype;
+
+public class TwoWheelerVechile extends Vechile {
+
+	//Additional property 
+	private boolean isElectric;
+	
+	
+	public TwoWheelerVechile(String engine, String model, 
+								long price,boolean isElectric) {
+		super(engine, model, price);
+		this.isElectric = isElectric;
+	}
+
+
+	//Override clone method
+	@Override
+	protected TwoWheelerVechile clone() throws CloneNotSupportedException {
+		
+		return (TwoWheelerVechile) super.clone();
+	}
+
+	
+}
+
+```
+```java
+package com.adi.prototype;
+
+public class FourWhellerVechile extends Vechile {
+
+	private boolean automatic;
+	private boolean isDisel;
+	
+	public FourWhellerVechile(String engine, String model, long price,
+			              boolean automatic, boolean isDisel) {
+		super(engine, model, price);
+		this.automatic = automatic;
+		this.isDisel = isDisel;
+		
+	}
+
+	@Override
+	protected FourWhellerVechile clone() throws CloneNotSupportedException {
+		
+		return (FourWhellerVechile) super.clone();
+	}
+	
+	
+
+}
+
+```
+```java
+package com.adi.prototype;
+
+import java.util.HashMap;
+import java.util.Map;
+
+public class VechileRegistry {
+
+	//contian Hashmap
+	private static Map<String, Vechile> mapVechiles = new HashMap<>();
+	
+	//Witin Starting of application
+	//  i am creating the prototypes and storing in my registry
+	static {
+		mapVechiles.put("TWO", new TwoWheelerVechile("320cc", "ROYAL ENF", 250000L,false));
+		mapVechiles.put("FOUR", new FourWhellerVechile("1000cc", "BMW", 1000000L, true, false));
+		
+	}
+	
+	//When my application start i have my prototype objects are ready.
+	public Vechile getVechile(String vechile) throws CloneNotSupportedException
+	{
+		//we get object from registry
+		// clone it
+		// and return it
+		return mapVechiles.get(vechile).clone();
+	}
+	
+}
+
+```
+```java
+package com.adi.prototype;
+
+public class Main {
+
+	public static void main(String[] args) throws CloneNotSupportedException {
+		
+		VechileRegistry registry = new VechileRegistry();
+		
+		System.out.println(registry.getVechile("TWO"));
+		//Vechile [engine=320cc, model=ROYAL ENF, price=250000]
+		
+		System.out.println(registry.getVechile("FOUR"));
+		//Vechile [engine=1000cc, model=BMW, price=1000000]
+	}
+
+}
+
+```
+
+### Basic Idea
+whatever base object you create that should be supported to Clonebale(I) so that cloning operation  easily perfrom.
+
+For sub-classes same principle applicable
+
+After that create Registry where you create an object and store them. 
+
+When some one require them he can call Registry method.
+The method will return cloning object. 
+
+This approach is used when the object creation is very bulky.
 
