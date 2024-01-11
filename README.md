@@ -826,4 +826,586 @@ public class Main {
 }
 
 ```
+# 4. Builder design pattern
+
+Whenever you want to create complex object step by step at that time us builder design pattern.  
+Part of Creational design pattern.
+
+![Alt text](image-8.png)
+normal house  
+house with swimming pool  
+house with 2 parking
+
+![Alt text](image-9.png)
+Isko implement karna hia code mein.. so  need to create multiple construtor.
+
+![Alt text](image-10.png)
+multiple constructor wala approach thik nhi  
+
+hum kya karenge.. sari properties likhene.. aur builder class mein pass karenge..  uski responsibility customized object creation ki..  
+
+builder class is inner class . 
+
+![Alt text](image-11.png)
+mujhe ghar mein kya kya chaiye ye Housebuildr class mein set karngge and ant mein build() method call kar lenge..  
+
+build() mehtod jo kuch varible set kiya hia HouseBuilder class mein uske hisab se House banake de dengi..
+
+WE given opiton to client whatever fetaure you want you add and based on that will create product for you.
+
+### Validation hickup
+
+kal sala client bina kuch add kiye build() method chala denga... aur bolenga house ka object de.. So here you add validation that some basic property you need to select.
+
+
+--- 
+Burger example
+```java
+package com.adi.builder.design;
+
+public class Burger {
+
+	//This are the properties on top of that...
+	// user can create his own burger
+	
+	private String size;
+	private boolean egg;
+	private boolean extraCheese;
+	private boolean mayonese;
+	private boolean onion;
+	private boolean lettuce;
+	
+    //yaha hum customer ke hisab se constructor nhi banayenge.
+	//Yaha hum multiple constructor nhi likhnege
+
+    //hum customer ki demand burgerbuilder ko denge
+    // wo hmko object banake denga..
+
+	//  so Burger constructor ko private karenge.
+	// internally call BurgerBuilder
+	//  BurgerBuilder will be inner class
+	//   BurgerBuilder mein hum sari property set karenge and based on that
+	//    ye custom burger object banane ke de denga
+	
+	private Burger(BurgerBuilder burgerBuilder) {
+		
+		//Initialize all the fields and do the validations
+		//  you can check if some property is not there you can throw exception.
+		
+		// burgerBuilder object banne ke baad
+		
+		//yaha burgerbuilder ke object se validation kar sakte..
+		// phir hum Burger ki property set karke..burger return karenge
+
+	}
+
+	public String getSize() {
+		return size;
+	}
+
+	public boolean isEgg() {
+		return egg;
+	}
+
+	public boolean isExtraCheese() {
+		return extraCheese;
+	}
+
+	public boolean isMayonese() {
+		return mayonese;
+	}
+
+	public boolean isOnion() {
+		return onion;
+	}
+
+	public boolean isLettuce() {
+		return lettuce;
+	}
+	
+   
+
+	//inner class 
+	public static class BurgerBuilder{
+		
+		// we address the same property here
+		
+		private String size;
+		private boolean egg;
+		private boolean extraCheese;
+		private boolean mayonese;
+		private boolean onion;
+		private boolean lettuce;
+		
+		
+		// to set this property 
+		//   we use method jo return karengi BurgerBuilder itself
+		
+		public BurgerBuilder size(String size) {
+			this.size = size;
+			return this;
+		}
+		
+		public BurgerBuilder egg(boolean egg) {
+			this.egg = egg;
+			return this;
+		}
+		
+		public BurgerBuilder extraCheese(boolean extraCheese) {
+			this.extraCheese = extraCheese;
+			return this;
+		}
+		
+		public BurgerBuilder mayonese(boolean mayonese) {
+			this.mayonese = mayonese;
+			return this;
+		}
+		
+		public BurgerBuilder onion(boolean onion) {
+			this.onion = onion;
+			return this;
+		}
+		
+		public BurgerBuilder lettuce(boolean lettuce) {
+			this.lettuce = lettuce;
+			return this;
+		}
+		
+		//sab set hone ke baad we have build() 
+		//  it will create object for us
+		
+		public Burger build() {
+			
+			//yaha this represent burger builder object
+			
+			return new Burger(this);
+		}
+	}
+	
+}
+
+```
+
+```java
+package com.adi.builder.design;
+
+public class BurgerMain {
+
+	public static void main(String[] args) {
+		
+		Burger burger = new Burger.BurgerBuilder()
+									.size("Large")
+									.egg(true)
+									.extraCheese(true)
+									.mayonese(false)
+									.onion(true)
+									.lettuce(true)
+									.build();	
+
+       
+
+	}
+
+}
+
+```
+
+### apna yogdaan
+```java
+package com.adi.builder.design;
+
+public class Burger {
+
+	private String size;
+	private boolean egg;
+	private boolean extraCheese;
+	private boolean mayonese;
+	private boolean onion;
+	private boolean lettuce;
+	
+	
+	private Burger(BurgerBuilder burgerBuilder) {
+		
+		size = burgerBuilder.size;
+		egg = burgerBuilder.egg;
+		extraCheese = burgerBuilder.extraCheese;
+		mayonese = burgerBuilder.mayonese;
+		onion = burgerBuilder.onion;
+		lettuce = burgerBuilder.lettuce;
+	}
+
+	public String getSize() {
+		return size;
+	}
+
+	public boolean isEgg() {
+		return egg;
+	}
+
+	public boolean isExtraCheese() {
+		return extraCheese;
+	}
+
+	public boolean isMayonese() {
+		return mayonese;
+	}
+
+	public boolean isOnion() {
+		return onion;
+	}
+
+	public boolean isLettuce() {
+		return lettuce;
+	}
+	
+	@Override
+	public String toString() {
+		return "Burger [size=" + size + ", egg=" + egg + ", extraCheese=" + extraCheese + ", mayonese=" + mayonese
+				+ ", onion=" + onion + ", lettuce=" + lettuce + "]";
+	}
+	
+	
+	public static class BurgerBuilder{		
+		
+		private String size;
+		private boolean egg;
+		private boolean extraCheese;
+		private boolean mayonese;
+		private boolean onion;
+		private boolean lettuce;		
+		
+		public BurgerBuilder size(String size) {
+			this.size = size;
+			return this;
+		}
+		
+		public BurgerBuilder egg(boolean egg) {
+			this.egg = egg;
+			return this;
+		}
+		
+		public BurgerBuilder extraCheese(boolean extraCheese) {
+			this.extraCheese = extraCheese;
+			return this;
+		}
+		
+		public BurgerBuilder mayonese(boolean mayonese) {
+			this.mayonese = mayonese;
+			return this;
+		}
+		
+		public BurgerBuilder onion(boolean onion) {
+			this.onion = onion;
+			return this;
+		}
+		
+		public BurgerBuilder lettuce(boolean lettuce) {
+			this.lettuce = lettuce;
+			return this;
+		}
+		
+		
+		public Burger build() {
+			
+			return   new Burger(this);
+		}
+	}
+
+	
+	
+}
+
+```
+
+```java
+package com.adi.builder.design;
+
+import com.adi.builder.design.Burger.BurgerBuilder;
+
+public class BurgerMain {
+
+	public static void main(String[] args) {
+		
+		Burger burger = new Burger.BurgerBuilder()
+									.size("Large")
+									.egg(true)
+									.extraCheese(true)
+									.mayonese(false)
+									.onion(true)
+									.lettuce(true)
+									.build();	
+		
+	System.out.println(burger);	
+	//Burger [size=Large, egg=true, extraCheese=true, mayonese=false, onion=true, lettuce=true]
+	
+	Burger burger2 = new Burger.BurgerBuilder()
+			.size("Large")			
+			.onion(true)
+			.lettuce(true)
+			.build();
+	
+	System.out.println(burger2);
+	//Burger [size=Large, egg=false, extraCheese=false, mayonese=false, onion=true, lettuce=true]
+
+	}
+
+}
+
+```
+### In Gangs of 4 design pattern in builder design patter director is mention ..
+
+For Meal we have MealBuilder where we create an object and meal should be veg or non veg
+
+
+VegBuilder meal create veg  and vice versa for NonVeg
+
+Director ko bolenge.. required VegMeal wo veg denga vice versa
+
+## Understand Director:
+Simple Meal object contain getter nd Setters.
+```java
+package com.adi.builder.design;
+
+public class Meal {
+	
+	private String curry;
+	private String bread;
+	private String coldDrink;
+	private String biryani;
+	public String getCurry() {
+		return curry;
+	}
+	public void setCurry(String curry) {
+		this.curry = curry;
+	}
+	public String getBread() {
+		return bread;
+	}
+	public void setBread(String bread) {
+		this.bread = bread;
+	}
+	public String getColdDrink() {
+		return coldDrink;
+	}
+	public void setColdDrink(String coldDrink) {
+		this.coldDrink = coldDrink;
+	}
+	public String getBiryani() {
+		return biryani;
+	}
+	public void setBiryani(String biryani) {
+		this.biryani = biryani;
+	}
+	@Override
+	public String toString() {
+		return "Meal [curry=" + curry + ", bread=" + bread + ", coldDrink=" + coldDrink + ", biryani=" + biryani + "]";
+	}
+
+	
+}
+
+```
+
+Meal ka bhi ek builder rahenga jisse hum uska object create karenge.  
+
+Since kisko bread aur curry chaihye… kisko uske sath coldDrink kaha se consturor likhte baithe..
+
+Par ha.. Meal Veg bhi hota hai aur non veg bhi
+
+So MealBuilder ye ek abstract class rahenga.   
+	Jiske pass abstract method rahengi..  
+	User add kar sake  what he want and build () kar
+
+```java
+package com.adi.builder.design;
+
+public abstract class MealBuilder {
+
+	//Contents that user want
+	
+	public abstract void addCurry();
+	
+	public abstract void addBread();
+	
+	public abstract void addColdDrink();
+	
+	
+	public abstract void addBiryani();
+	
+	//method which return meal
+	public abstract Meal build();
+}
+
+```
+
+```java
+package com.adi.builder.design;
+
+public class VegMealBuilder extends MealBuilder {
+
+	private Meal meal;
+	
+	
+	//For VegMealBuilder we have to return meal at the end
+	// so create Meal object and intialize it in constructor
+	public VegMealBuilder() {
+		
+		meal = new Meal();
+	}
+
+
+	//meal mein set karte hue build() mein meal bhejlo
+	@Override
+	public void addCurry() {
+		
+		this.meal.setCurry("Veg Curry");
+		
+	}
+
+
+	@Override
+	public void addBread() {
+		
+		this.meal.setBread("Naan");
+		
+	}
+
+
+	@Override
+	public void addColdDrink() {
+		
+		this.meal.setColdDrink("sprite");
+		
+	}
+
+
+	@Override
+	public void addBiryani() {
+		
+		this.meal.setBiryani("Veg Biryani");
+		
+	}
+
+
+	@Override
+	public Meal build() {
+		
+		return meal;
+	}
+
+	
+
+}
+
+```
+```java
+package com.adi.builder.design;
+
+public class NonVegMealBuilder extends MealBuilder{
+
+	private Meal meal;
+
+	public NonVegMealBuilder() {
+		
+		meal = new Meal();
+	}
+
+	@Override
+	public void addCurry() {
+		
+		this.meal.setCurry("Non Veg Curry");
+		
+	}
+
+	@Override
+	public void addBread() {
+		
+		this.meal.setBread("Paratha");
+		
+	}
+
+	@Override
+	public void addColdDrink() {
+		this.meal.setColdDrink("Thumps UP");
+		
+	}
+
+	@Override
+	public void addBiryani() {
+		this.meal.setBiryani("Chicken Biryani");
+		
+	}
+
+	@Override
+	public Meal build() {
+		
+		return meal;
+	}
+
+	
+}
+
+```
+
+Ab yadi kisi customer ne bola ki mereko Veg meal hona.. toh mera pass aisa kuch hona..  
+Jo veg meal serve kare.. bina bole   
+Ye kaam director Karenga.. (input ke hisab se—object create karke bhejenga)
+
+```java
+package com.adi.builder.design;
+
+public class MealDirector {
+	
+	private MealBuilder mealBuilder;
+
+	//MealDirector having MealBuilder in constructor 
+	// which taken care what of meal is generate...
+	//Veg meal builder diya director ko to
+	// wo prepareMeal() ki sahayata se.. veg thali denga.
+	//same case for NonVegMealBuilder direcotr diya to
+	public MealDirector(MealBuilder mealBuilder) {
+	
+		this.mealBuilder = mealBuilder;
+	}
+	
+	//prepareMeal() calling all the method of MealBuilder
+	// and at last calling build() to retrun Meal object.
+	public Meal prepareMeal() {
+		mealBuilder.addBiryani();
+		mealBuilder.addCurry();
+		mealBuilder.addBread();
+		mealBuilder.addColdDrink();
+		
+		return mealBuilder.build();
+	}
+}
+
+```
+
+```java
+package com.adi.builder.design;
+
+public class MainMeal {
+
+	public static void main(String[] args) {
+		
+		Meal meal = new MealDirector(new VegMealBuilder()).prepareMeal();
+		
+		System.out.println(meal); 
+		//Meal [curry=Veg Curry, bread=Naan, coldDrink=sprite, biryani=Veg Biryani]
+		
+		meal = new MealDirector(new NonVegMealBuilder()).prepareMeal();
+		
+		System.out.println(meal); 
+		//Meal [curry=Non Veg Curry, bread=Paratha, coldDrink=Thumps UP, biryani=Chicken Biryani]
+	}
+
+}
+
+```
+
+Nested class ke pattern mein banate hia builder design Pattern follow karke so aur jabardust banta.  
+
+Lombok mein annotation hai @Builder  yadi kiske class k upar lagaya to wo convert ho jata builder design pattern men
+
 
