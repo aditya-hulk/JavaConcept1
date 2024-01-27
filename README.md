@@ -1630,3 +1630,4 @@ The method will return cloning object.
 
 This approach is used when the object creation is very bulky.
 
+# 6. Adapter design pattern
