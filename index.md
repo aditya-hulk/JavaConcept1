@@ -5,3 +5,4 @@
 # 4. Builder design pattern
 # 5. Prototype Design Pattern
 # 6. Adapter design pattern
+# 7. Decorator Design Pattern

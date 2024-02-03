@@ -1631,3 +1631,339 @@ The method will return cloning object.
 This approach is used when the object creation is very bulky.
 
 # 6. Adapter design pattern
+
+It is a Structural design pattern.
+
+It is basically adapt to diff types of objects (ie. diff type of implementations) that we have.
+
+### Kab use karna..
+Jab diff type of implementation / interface humko adapt karna hia tab.
+
+India aur Us mein diff types of charging ports(i.e electrical sockets) so we require adapater to meet out our desire requirements.
+
+![Alt text](image-15.png)
+
+Aap kayi sari 3rd party application ke sath kam karte hai.   
+Aap App1 se xml mein data lete hai..uske sath achee se kam karte hai..   
+Aapko App2 ko data send karna hai App1 ka but App2 sirf json data ke sath hi kaam kar sakta..    
+so aap Adapter use karonge jo xml data lenga as input aur usse json convert karke aage bhejenga.  
+This is the use case of Adapter design pattern.
+
+![Alt text](image-16.png)
+
+![Alt text](image-17.png)
+
+Kis tarha se call kiya jata hia.. ye yaha batayenga
+
+### Item iterface
+```java
+package com.adi.adapter.designPattern;
+
+public interface Item {
+
+	String getItemName();
+	
+	String getPrice();
+	
+	String getRestrauntName();
+}
+```
+### Implementation class
+```java
+package com.adi.adapter.designPattern;
+
+public class FoodItem implements Item {
+
+	@Override
+	public String getItemName() {
+		
+		return null;
+	}
+
+	@Override
+	public String getPrice() {
+		
+		return null;
+	}
+
+	@Override
+	public String getRestrauntName() {
+		
+		return null;
+	}
+
+}
+```
+### Grocessary Interface
+```java
+package com.adi.adapter.designPattern;
+
+public interface GrocessaryItem {
+
+	String getName();
+	
+	String getPrice();
+	
+	String getStoreName();
+}
+```
+### GrocessaryItem Implementation class
+```java
+package com.adi.adapter.designPattern;
+
+public class GrocessaryProduct implements GrocessaryItem{
+
+	@Override
+	public String getName() {
+		
+		return null;
+	}
+
+	@Override
+	public String getPrice() {
+	
+		return null;
+	}
+
+	@Override
+	public String getStoreName() {
+		
+		return null;
+	}	
+}
+```
+
+### Swiggi Store class whcih accept items
+```java
+package com.adi.adapter.designPattern;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class SwiggiStore {
+
+	//Contain List of Items
+	List<Item> items = new ArrayList<>();
+	
+	
+	//having an add() method
+	public void addItems(Item item) {
+		
+		items.add(item);
+	}
+	
+}
+
+```
+### Adapter class whcih convert grocessary into item
+```java
+package com.adi.adapter.designPattern;
+
+public class GrocessaryItemAdapter implements Item{
+
+	private GrocessaryItem gItem;
+	
+	//Hume object banane ke liye constructor lagenga
+	public GrocessaryItemAdapter(GrocessaryItem gItem) {
+	
+		this.gItem = gItem;
+	}
+
+	@Override
+	public String getItemName() {
+		
+		return gItem.getName();
+	}
+
+	@Override
+	public String getPrice() {
+		
+		return gItem.getPrice();
+	}
+
+	@Override
+	public String getRestrauntName() {
+		
+		//Yaha hum getRestrauntName ke jagah store name return kar rahe hai
+		
+		return gItem.getStoreName();
+	}
+
+}
+
+```
+### Main 
+```java
+package com.adi.adapter.designPattern;
+
+public class Main_Adapter {
+
+	public static void main(String[] args) {
+	
+		SwiggiStore swiggiStore = new SwiggiStore();
+		
+		swiggiStore.addItems(new FoodItem());
+		
+		System.out.println("==============");
+		
+		//Abhi hume jab Grocessary lena hai toh	
+		
+		swiggiStore.addItems(new GrocessaryItemAdapter(new GrocessaryProduct()));
+
+	}
+
+}
+
+```
+# 7. Bridge Design pattern
+
+part of Structural design pattern. It help us to create structure for different classes.
+
+Aap jab bahut sare classes & subset of classes ke sath kaam kar rahe ho and you want to divide it into separate hierarchy at that time bridge design pattern is useful.
+
+
+![Alt text](image-18.png)
+
+Aap Video ko youtube mein bhi dekh sakte ho aur netflix mein bhi. Usme bhi aap youtube aur netflix par video aap play kar sakte ho Hd, 4K, 8K ya HDMR mein..  
+
+Yadi aapko ye functaionality hona you will create subclasses(subtype ) of that as well.
+
+Aapko yadi PrimeVideo add karna hia... to usko bhi aap add karonge.. and uske subtypes ko bhi.. Jaise PrimeVideo Hd.. 4k etc 
+
+So you creating the huge list of subclasses exponentially. This is not a good thing.
+
+![Alt text](image-19.png)
+Bridge Pattern convert this entire relationship i.e Is-A relationship(Inheritance) into HAs-A relationship i.e composition.
+
+![Alt text](image-20.png)
+Hum separate hierarchy build karenge. Hum Processing class separate create karenge..
+
+![Alt text](image-21.png)
+Now video (contain)will have videoProcessor. 
+hum Youtube video se youtubeHd,youtube4k,youttuvbe8k ya youtubeHdmr bana sakte.. Same for the other video.
+
+### VideoProcessor
+```java
+package com.adi.bridge.design.pattern;
+
+//This is separate hierarchy :  let say = hierarchy-1
+public interface VideoProcessor {
+
+	void process(String videoFile);
+}
+
+```
+### Implemented class
+```java
+package com.adi.bridge.design.pattern;
+
+public class HDProcessor implements VideoProcessor{
+
+	@Override
+	public void process(String videoFile) {
+		
+		//process	
+		System.out.println(" ==> "+videoFile);
+	}
+
+}
+```
+
+### Implemented class
+```java
+package com.adi.bridge.design.pattern;
+
+public class UHD4KProcessor implements VideoProcessor{
+
+	@Override
+	public void process(String videoFile) {
+		
+		//process	
+		System.out.println(" ==> "+videoFile);
+	}
+}
+```
+
+### Video
+```java
+package com.adi.bridge.design.pattern;
+
+//This is separate hierarchy : let say- hierarchy-2
+//With composition we can club multiple hierarchy.
+//Video contain videoProcessor
+// Video Has-A VideoProcessor
+public abstract class Video {
+
+	protected VideoProcessor processor;
+
+	public Video(VideoProcessor processor) {
+	
+		this.processor = processor;
+	}
+	
+	public abstract void play(String videoFile);
+}
+```
+### Implemented class
+```java
+package com.adi.bridge.design.pattern;
+
+public class YoutubeVideo extends Video{
+
+	public YoutubeVideo(VideoProcessor processor) {
+		
+		super(processor);		
+	}
+
+	@Override
+	public void play(String videoFile) {
+		
+		processor.process(videoFile);		
+	}	
+}
+```
+
+### Impelmented class
+```java
+package com.adi.bridge.design.pattern;
+
+public class NetFlixVideo extends Video{
+
+	public NetFlixVideo(VideoProcessor processor) {
+		
+		super(processor);		
+	}
+
+	@Override
+	public void play(String videoFile) {
+	
+		processor.process(videoFile);
+	}
+
+}
+```
+### Main
+```java
+package com.adi.bridge.design.pattern;
+
+public class MainBridge {
+
+	public static void main(String[] args) {
+		
+		Video youtubeVideo = new YoutubeVideo(new HDProcessor());
+		youtubeVideo.play("abc.mp4");
+		
+		Video netFlixVideo = new NetFlixVideo(new UHD4KProcessor());
+	     netFlixVideo.play("xyz.mp4");	
+	
+	}
+}
+Output:
+ ==> abc.mp4
+ ==> xyz.mp4
+```
+
+We convert huge substantial classes library into two different hierarchy and converted into Has-A relationship.
+# 7. Decorator Design Pattern
+
+
