@@ -1964,6 +1964,731 @@ Output:
 ```
 
 We convert huge substantial classes library into two different hierarchy and converted into Has-A relationship.
-# 7. Decorator Design Pattern
+# 8. Decorator Design Pattern
+
+Part of Structural design pattern.
+
+It will add behaviour of one object into special wrapper which will add another behviour of same object into it.
+
+It is like box inside box inside box.
+
+![Alt text](image-22.png)
+
+Har kisko base Pizza ke sath alag alag topping chaiye. 10 tarh ki toppings hai so bahut permutation combination ke pizza banege..
+
+Ye requirement cater karne ke liye oops mein humko kayi saare classes banane padenge. 
+
+Kyuki toppings add hone ke baad pizzaa ka structure change ho raha hai but ulitmately pizza hi hai.
+
+so to save us decorator design pattern comes in picutre.
+
+With Decorator design pattern.  
+Yadi humko Pizza + jalepeno wala behaviour chaiye so hum pizaa+jalepeno behviour lelenge at end wo pizz hi honga with some extra toppings/behaviour.
+
+### Rough Idea
+![Alt text](image-23.png)
+
+### Piza Interface
+```java
+package com.adi.decorator.designPattern;
+
+public interface Pizza {
+
+	//This Pizza interface having bake() 
+	public String bake();
+}
+```
+
+### Base Pizza
+```java
+package com.adi.decorator.designPattern;
+
+//Implementation class
+
+public class BasePizza implements Pizza{
+
+	
+	//Method returning Base Pizza
+	
+	@Override
+	public String bake() {
+		
+		return "Base Pizza";
+	}
+
+}
+```
+
+### PizzaDecorator
+```java
+package com.adi.decorator.designPattern;
+
+//abstract class of PizzaDecorator
+
+public abstract class PizzaDecorator implements Pizza{
+
+	//Instance of Pizza Interface
+	protected Pizza pizza;
+	
+	//initialize this reference via constructor
+	public PizzaDecorator(Pizza pizza) {
+	
+		this.pizza = pizza;
+	}
+
+	public String bake() {
+		
+		//returning the Pizza.bake()
+		//base pizza return karwa raha hu.
+		
+		return pizza.bake();
+	}
+}
+```
+
+### CheeseDecorator
+```java
+package com.adi.decorator.designPattern;
+
+//ChesseBurstDecorator
+
+public class ChesseBurstDecorator extends PizzaDecorator {
+
+	//Initialize Pizza via constructor
+	
+	public ChesseBurstDecorator(Pizza pizza) {
+		super(pizza);	
+	}
+	 
+	public String bake() {
+		
+		//Return base pizza + extra chesses behviour
+		
+		return pizza.bake() + addCheese();
+	}
+
+	public String addCheese() {
+		
+		return " + Cheese ";
+	}
+
+}
+```
+
+### JalpenoDecorator
+```java
+package com.adi.decorator.designPattern;
+
+//JalpenoDecorator
+
+public class JalepanoDecorator extends PizzaDecorator {
+
+	//Initialize Pizza via constructor
+	
+	public JalepanoDecorator(Pizza pizza) {
+		super(pizza);		
+	}
+	
+	public String bake() {
+		
+		//Return base pizza + extra Jalpeno behviour
+		return pizza.bake() + addJalepano();
+	}
+
+	public String addJalepano() {
+		
+		return " + Jalepano ";
+	}
+
+}
+```
+
+### How to call
+```java
+package com.adi.decorator.designPattern;
+
+public class Main_Pizza_Decorator {
+
+	public static void main(String[] args) {
+		
+		//I want pizza from Base
+		// also i requirer cheese on that
+		// on top of that i require Jalepano
+		
+		
+		//Decorator on top of the basePizz
+		// main Base se decorate karenge
+		// add cheseburst on base Pizza
+		// then also add Jalpeno
+		
+		Pizza pizza = new JalepanoDecorator(new ChesseBurstDecorator(new BasePizza()));
+
+		System.out.println(pizza.bake());
+	}
+
+}
+Output:
+Base Pizza + Cheese  + Jalepano 
+```
+# 9. Facade Design Pattern
+
+Part of Structural design pattern which allow us to structure our application.
+
+Aap apne application mein 3rd party lib use kar rahe ho. That 3rd party lib is very huge.
+
+Aapko 3rd party lib ki entire functionality nhi chaiye.. sirf thodi bahut hi functionality chaiye.
+
+In that case you go for abstraction.
+
+so aap ek helper class banate ho jo us 3rd party ko internally use karta hai.. and usme desired functionlity le lete ho. 
+
+And instead of 3rd party aap wo helper class se desired functionlity late ho.
+
+![Alt text](image-24.png)
+
+### 2nd eg
+![Alt text](image-25.png)
+
+### Restraunt
+```java
+package com.adi.facade.designPattern;
+
+//It is responsible to prepare my order
+public class Restraunt {
+
+	public void prepareOrder() {
+		
+	}
+}
+```
+### DeliveryTeam
+```java
+package com.adi.facade.designPattern;
+
+//It is responsible to assign a delivery boy.
+public class DeliveryTeam {
+
+	public void assignDeliveryBoy() {
+		
+	}
+}
+```
+
+### DeliveryBoy
+```java
+package com.adi.facade.designPattern;
+
+//Responsible to pick up the order from restraunt 
+// and deliver it to the customer
+
+public class DeliveryBoy {
+
+	public void pickUpOrder() {
+		
+	}
+	
+	public void deliverOrder() {
+		
+	}
+}
+```
+
+### ZomatoFacade
+```java
+package com.adi.facade.designPattern;
+
+//DeliveryTeam - bahut sari delivery karti hia
+//  hmko food delivery karne wali team chaiye
+
+//deliveryBoy - bahut sare rahte 
+//  humko food ko delivery karne wale bande cahiye..
+
+//So basically ye abstraction provide kar raha hai sabka 
+//  nhi toh ye sab kuch aapko manage karna padta tha..
+
+// ZomatoFacade ke pass sari responsibility aa gyi 
+//  it provide abstraction in top of everything
+//    iske pass ek method hai which allow us to do all things
+
+//Ye apne liye aasan ho gya to manage entire things
+// i.e advantage of facade design pattern.. 
+//  ye sab manage kar levenga..
+public class ZomatoFacade {
+
+	private Restraunt restraunt;
+	
+	private DeliveryTeam deliveryTeam;
+	
+	private DeliveryBoy deliveryBoy;
+	
+	public void placeOrder() {
+		
+		restraunt.prepareOrder();
+		
+		deliveryTeam.assignDeliveryBoy();
+		
+		deliveryBoy.pickUpOrder();
+		
+		deliveryBoy.deliverOrder();
+	}
+}
+```
+
+# 10. Proxy Design Pattern
+Part of Structural design pattern
+
+Allow us to create a proxy object or a reference object   to an actual object  
+Which can we use easily …. Instead of an actual object.
+
+![Alt text](image-26.png)
+Aap kuch purchase karte ho to appko payment karna hota hia
+
+In let’s take  Payment as an interface, In Payment(I) we have pay() method
+
+Aap credit card ya debit card ya Online transaction ya cash se  bhi shopkeeper  ko pay kar sakte ho and at end sab cash hi hai. 
+
+Here Cash is acutal object
+
+So CC/DC/OT are proxy to cash
+
+### 2nd Eg
+![Alt text](image-27.png)
+
+Aap apne bank mein jake bankAccount aap kayi sare operation kar sakte ho like withdraw/deposit/check balance
+
+Aap same kam ATM jakar bhi kar sakte ho. So ATM is like proxy to your bank Account
+
+### Account
+```java
+package com.adi.proxy.designPattern;
+
+//we have account interface
+public interface Account {
+
+	//contianing two methods
+	
+	public void withdraw();
+	
+	void getAccountNumber();
+}
+```
+
+### BankAccount
+```java
+package com.adi.proxy.designPattern;
+
+//The Account interface is implemented by the BankAccount
+
+public class BankAccount implements Account {
+
+	@Override
+	public void withdraw() {
+		
+		System.out.println("Amount withdraw from Bank Account");
+	}
+
+	@Override
+	public void getAccountNumber() {
+		
+		System.out.println("Your account number is XYZ");
+	}
+
+}
+```
+### ATM
+```java
+package com.adi.proxy.designPattern;
+
+//This is proxy object i.e proxy to BankAccount
+//  it should also implement Account
+//   it contain object of Acutal object i.e bankAccount
+
+public class ATM implements Account{
+
+	@Override
+	public void withdraw() {
+		
+		//Access withdraw() method using BankAccount 
+		//So u use proxy but actually interanlly it is using actual object
+		
+		
+		BankAccount bankAccount = new BankAccount();		
+		bankAccount.withdraw();
+		
+		System.out.println("Via ATM");
+	}
+
+	@Override
+	public void getAccountNumber() {		
+		
+	}
+
+}
+```
+### main
+```java
+package com.adi.proxy.designPattern;
+
+public class Main_Proxy {
+
+	public static void main(String[] args) {
+		
+		ATM atm = new ATM();
+		
+		atm.withdraw();
+	}
+
+}
+Output:
+Amount withdraw from Bank Account
+Via ATM
+
+```
+# 11. Composite Design Pattern
+
+
+# 16. Observer Design Pattern
+Part of behavioral design pattern 
+
+Also called as Publisher-subscriber design pattern or  
+Observable – observer design pattern.
+
+If there is change in state of publisher object then the subscriber will get notify.
+
+![Alt text](image-29.png)
+
+![Alt text](image-28.png)
+
+### Channel
+```java
+package com.adi.observer.designPattern;
+
+//Suscriber has update() method
+
+public interface Channel {
+
+	public void update(Object o);
+}
+```
+
+### NewsChannel
+```java
+package com.adi.observer.designPattern;
+
+public class NewsChannel implements Channel {
+
+	private String news;
+	
+	public String getNews() {
+		return news;
+	}
+
+	public void setNews(String news) {
+		this.news = news;
+	}
+
+	@Override
+	public void update(Object news) {
+		
+		this.setNews((String) news);
+	}
+
+}
+```
+
+### NewsAgency
+```java
+package com.adi.observer.designPattern;
+
+import java.util.ArrayList;
+import java.util.List;
+
+//Publisher
+
+public class NewsAgency {
+
+	//Has news and that news to be pulished to diff suscriber.
+	private String news;
+	
+	//NewsAgecy contain all list of suscribers
+	private List<Channel> channels = new ArrayList();
+	
+	//ablity to add New suscriber
+	public void addObserver(Channel channel) {
+		
+		this.channels.add(channel);
+	}
+	
+	//ability to remove suscriber
+	public void removeObserver(Channel channel) {
+		
+		this.channels.remove(channel);
+	}
+	
+	//When there is change of state or new news available.
+	public void setNews(String news) {
+		
+		//it will set the news first
+		this.news = news;
+		
+		//update all channels
+		for(Channel channel : this.channels) {
+			
+			channel.update(this.news);
+		}
+	}
+}
+```
+
+### Main
+```java
+package com.adi.observer.designPattern;
+
+public class Main_Observer {
+
+	public static void main(String[] args) {
+		
+		NewsChannel channel1 = new NewsChannel();
+		
+		NewsAgency newsAgency = new NewsAgency();
+		
+		newsAgency.addObserver(channel1);
+		
+		newsAgency.setNews("Russia vs Ukrain war happening");
+		
+		System.out.println(channel1.getNews());
+	}
+
+}
+Output:
+Russia vs Ukrain war happening
+
+```
+# 17. Flyweight Design Pattern
+Also called as Cache Design Pattern
+
+When to use Flyweight Design Pattern?
+-	Number of Object creation is huge 
+-	Object creation is very heavy in processing (i.e taking too much time  for creating the object in memory.)
+-	Object has intrinsic(object is unique) and extrinsic (added by the client) properties
+
+![Alt text](image-30.png)
+![Alt text](image-31.png)
+
+### Shape
+```java
+package com.adi.flyweight.designPattern;
+
+
+import java.awt.*;
+
+
+public interface Shape {
+
+	
+	public void draw(Graphics g,int x, int y, int width, int height,
+			Color color);
+	
+}
+```
+### Line
+```java
+package com.adi.flyweight.designPattern;
+
+import java.awt.Color;
+import java.awt.Graphics;
+
+//Implementation class having intrinsic and extrinsic property
+public class Line implements Shape {
+
+	public Line() {
+		
+		System.out.println("Creating Line Object");
+		
+		//Here we provide delay.
+		try {
+			Thread.sleep(2000);
+			
+		} catch (InterruptedException e) {
+			
+			e.printStackTrace();
+		}
+	}
+	
+	@Override
+	public void draw(Graphics line, int x1, int y1, int x2, int y2, Color color) {
+		
+		line.setColor(color);
+		line.drawLine(x1, y1, x2, y2);
+		
+	}
+
+}
+```
+### Oval
+```java
+package com.adi.flyweight.designPattern;
+
+import java.awt.Color;
+import java.awt.Graphics;
+
+public class Oval implements Shape {
+
+	//Provide intrinsic property
+	private boolean fill;
+
+	public Oval(boolean f) throws InterruptedException {
+
+		this.fill = f;
+		System.out.println("Creating an Oval object with fill=" + f);
+
+		// Provide delay
+		Thread.sleep(2000);
+
+	}
+
+	@Override
+	public void draw(Graphics circle, int x, int y, int width, int height, Color color) {
+
+		circle.setColor(color);
+		circle.fillOval(x, y, width, height);
+	}
+
+}
+```
+### ShapeType
+```java
+package com.adi.flyweight.designPattern;
+
+public enum ShapeType {
+
+	OVAL_FILL,OVAL_NOFILL,LINE;
+}
+```
+
+### ShapeFactory
+```java
+package com.adi.flyweight.designPattern;
+
+import java.util.HashMap;
+
+public class ShapeFactory {
+
+	private static final HashMap<ShapeType, Shape> shapes = new HashMap<>();
+	
+	//Based on shapetype we provide instance 
+	// if instance is not avialable for first time
+   // then we create that and put in HashMap
+	// next time we direclty fetch from it.
+	public static Shape getShape(ShapeType type) throws InterruptedException {
+		
+		Shape shapeImpl = shapes.get(type);
+		
+		if(shapeImpl == null) {
+			
+			if(type.equals(ShapeType.OVAL_FILL)) {
+				
+				shapeImpl = new Oval(true);
+			}
+			else if(type.equals(ShapeType.OVAL_NOFILL)) {
+				
+				shapeImpl = new Oval(false);
+			}
+			else if(type.equals(ShapeType.LINE)) {
+				
+				shapeImpl = new Line();
+			}
+			
+			shapes.put(type, shapeImpl);
+		}
+		
+		return shapeImpl;
+	}
+}
+```
+### Client
+```java
+package com.adi.flyweight.designPattern;
+
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Container;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+
+import java.awt.Graphics;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+public class DrawingClient extends JFrame{
+	
+	private static final long serialVersionUID = -1350200437285282550L;
+	private final int WIDTH;
+	private final int HEIGHT;
+	
+	private static final ShapeType shapes[] = { ShapeType.LINE, ShapeType.OVAL_FILL,ShapeType.OVAL_NOFILL };
+	private static final Color colors[] = { Color.RED, Color.GREEN, Color.YELLOW };
+	
+	public DrawingClient(int width, int height){
+		this.WIDTH=width;
+		this.HEIGHT=height;
+		Container contentPane = getContentPane();
+
+		JButton startButton = new JButton("Draw");
+		final JPanel panel = new JPanel();
+
+		contentPane.add(panel, BorderLayout.CENTER);
+		contentPane.add(startButton, BorderLayout.SOUTH);
+		setSize(WIDTH, HEIGHT);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setVisible(true);
+
+		startButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent event) {
+				Graphics g = panel.getGraphics();
+				for (int i = 0; i < 20; ++i) {
+					Shape shape = null;
+					try {
+						shape = ShapeFactory.getShape(getRandomShape());
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					shape.draw(g, getRandomX(), getRandomY(), getRandomWidth(),
+							getRandomHeight(), getRandomColor());
+				}
+			}
+		});
+	}
+	private ShapeType getRandomShape() {
+		return shapes[(int) (Math.random() * shapes.length)];
+	}
+
+	private int getRandomX() {
+		return (int) (Math.random() * WIDTH);
+	}
+
+	private int getRandomY() {
+		return (int) (Math.random() * HEIGHT);
+	}
+
+	private int getRandomWidth() {
+		return (int) (Math.random() * (WIDTH / 10));
+	}
+
+	private int getRandomHeight() {
+		return (int) (Math.random() * (HEIGHT / 10));
+	}
+
+	private Color getRandomColor() {
+		return colors[(int) (Math.random() * colors.length)];
+	}
+
+	public static void main(String[] args) {
+		DrawingClient drawing = new DrawingClient(500,600);
+	}
+}
+```
 
 
