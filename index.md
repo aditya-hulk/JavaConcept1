@@ -13,3 +13,6 @@
 
 # 16. Observer Design Pattern
 # 17. Flyweight Design Pattern
+# 18. Interpreter Design Pattern
+# 19. State design Pattern
+

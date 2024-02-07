@@ -2691,4 +2691,158 @@ public class DrawingClient extends JFrame{
 }
 ```
 
+# 18. Interpreter Design Pattern
+Part of Behavioral design pattern  
+
+As the name suggest,  It will allow us to interpret the things.
+
+For any particular expression in language we need to interpret the things.
+
+![Alt text](image-32.png)
+
+### Expression
+```java
+package com.adi.interprete.designPattern;
+
+public interface Expression {
+
+	//Whatever context we give to this method
+	// this method interpret that context and return result
+	
+	public boolean interpret(String context);
+}
+```
+
+### Terminal Expression
+```java
+package com.adi.interprete.designPattern;
+
+// In Terminal Expression we add, data  ->  Priya    
+// and                    context is -> Priya is female.
+// so here they can find..
+// if context contain data or not
+
+public class TerminalExpression implements Expression {
+
+	private String data;
+
+	public TerminalExpression(String data) {
+
+		this.data = data;
+	}
+
+	@Override
+	public boolean interpret(String context) {
+
+		if (context.contains(data)) {
+			return true;
+		}
+
+		return false;
+	}
+
+}
+```
+
+### AndExpression
+```java
+package com.adi.interprete.designPattern;
+
+public class AndExpression implements Expression {
+
+	private Expression expr1 = null;
+	private Expression expr2 = null;
+
+	public AndExpression(Expression expr1, Expression expr2) {
+		super();
+		this.expr1 = expr1;
+		this.expr2 = expr2;
+	}
+
+	@Override
+	public boolean interpret(String context) {
+		
+		//Here And operation is perform between 2 expression
+		return expr1.interpret(context)  && expr2.interpret(context);
+	}
+
+}
+```
+### OrEx
+```java
+package com.adi.interprete.designPattern;
+
+public class OrExpression implements Expression {
+
+	private Expression expr1 = null;
+	private Expression expr2 = null;
+
+	public OrExpression(Expression expr1, Expression expr2) {
+		super();
+		this.expr1 = expr1;
+		this.expr2 = expr2;
+	}
+
+	@Override
+	public boolean interpret(String context) {
+		
+		
+		return expr1.interpret(context)  || expr2.interpret(context);
+	}
+
+}
+```
+
+### App
+```java
+package com.adi.interprete.designPattern;
+
+public class InterpretApplication {
+
+	//For demo of OrExpression
+	// it require 2 expression
+	// so that will be created using TerminalExpression
+	public static Expression getMaleExpression() {
+		
+		Expression exp1 = new TerminalExpression("Robert");
+		Expression exp2 = new TerminalExpression("John");
+		
+		return new OrExpression(exp1, exp2);
+	}
+	
+	public static Expression getMarriedWomanExpression() {
+		
+		Expression exp1 = new TerminalExpression("Julie");
+		Expression exp2 = new TerminalExpression("married");
+		
+		return new AndExpression(exp1, exp2);
+	}
+	
+	
+	public static void main(String[] arg) {
+		
+		Expression isMale = getMaleExpression();
+		
+		System.out.println("John is male? => "+ isMale.interpret("John is male?"));
+		
+		System.out.println();
+		System.out.println("---------------------");
+		System.out.println();
+		
+		
+		Expression isMarriedWomen = getMarriedWomanExpression();		
+		
+		System.out.println("Julie is  married? => "+ isMarriedWomen.interpret("Julie is  married?"));
+	}
+}
+Output:
+John is male? => true
+
+---------------------
+
+Julie is  married? => true
+
+```
+# 19. State design Pattern
+
 
